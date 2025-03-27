@@ -107,32 +107,30 @@ export class Game {
     const topCard = this.getTopCard();
 
     if(this.activeRequest){
-        if(this.activeRequest.type === "rank"){
-            return this.activeRequest.value === card.rank;
-        }else if (this.activeRequest.type === "suit"){
-            return this.activeRequest.value === card.suit;
-        }
+        return (
+          (this.activeRequest.type === "rank" && this.activeRequest.value === card.rank) ||
+          (this.activeRequest.type === "suit" && this.activeRequest.value === card.suit)
+        )
     }
-    if (card.rank === "Q") return true;
-    if (topCard.rank === "Q") return true;
-
-    if (card.suit === topCard.suit) return true;
-    if (card.rank === topCard.rank) return true;
-
-    return true;
+    
+    return card.suit === topCard.suit || card.rank === topCard.rank || card.rank === "Q";
   }
 
   // Funkcja sprawdzania czy gracz moze zagrac
   drawIfNoMove(): void {
     const currentPlayer = this.getCurrentPlayer();
-    const hasPlayableCard = currentPlayer.getHand().some((card) => this.canPlay(card));
-    if (!hasPlayableCard){
-      console.log(`${currentPlayer.name} nie moze zagrac`);
-      const drawnCard = this.deck.draw();
-      if (drawnCard){
+    if (!currentPlayer.getHand().some(card => this.canPlay(card))){
+        console.log(`${currentPlayer.name} dobiera karte (nie może zagrać)`);
+
+        const drawnCard = this.deck.draw();
+        if(drawnCard){
           currentPlayer.addCard(drawnCard);
-      }  
-    } 
+          if(!this.canPlay(drawnCard)){
+            console.log(`${currentPlayer.name} kolejka przechodzi (dalej nie może zagrać)`);
+            this.currentTurn = (this.currentTurn + 1) % this.players.length;
+          }
+        }
+    }
   }
 
 history : string[] = [];
@@ -156,5 +154,14 @@ history : string[] = [];
       this.history.push(`${currentPlayer.name} zagrał ${card.rank} ${card.suit}`);
       this.handleSpecialCard(card);
 
+      if (this.checkGameEnd()){
+        console.log(`${currentPlayer.name} wygrał`);
+      } else {
+        this.currentTurn = (this.currentTurn + 1) % this.players.length;
+      }
+  }
+
+  checkGameEnd(): boolean {
+    return this.players.some(player => player.getHand().length === 0);
   }
 }
