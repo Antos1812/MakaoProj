@@ -135,6 +135,8 @@ export class Game {
     } 
   }
 
+history : string[] = [];
+
   // Funkcja zagrywania karty
   playCard(card: Card | null): void {
     const currentPlayer = this.getCurrentPlayer();
@@ -151,6 +153,7 @@ export class Game {
 
       currentPlayer.removeCard(card);
       this.discardPile.push(card);
+      this.history.push(`${currentPlayer.name} zagrał ${card.rank} ${card.suit}`);
       this.handleSpecialCard(card);
 
   }
