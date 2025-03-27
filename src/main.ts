@@ -1,10 +1,10 @@
 import kaplay, { GameObj } from "kaplay";
 import { Card } from "./card";
-import "kaplay/global"; // uncomment if you want to use without the k. prefix
+import "kaplay/global"; 
 
 kaplay();
 
-loadRoot("./"); // A good idea for Itch.io publishing later
+loadRoot("./"); 
 loadSprite("cards", "sprites/cards.png", {
   sliceX: 9,
   sliceY: 6,
