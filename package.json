@@ -9,7 +9,7 @@
 		"check": "tsc"
 	},
 	"dependencies": {
-		"kaplay": "^3001.0.9"
+		"kaplay": "^3001.0.10"
 	},
 	"devDependencies": {
 		"@types/node": "^22.13.5",
