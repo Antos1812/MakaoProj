@@ -133,6 +133,22 @@ export class Game {
     }
   }
 
+  applyDrawPenalty(count: number): void {
+     const playerIndex = (this.currentTurn + 1) % this.players.length;
+     const penalizedPlayer = this.players[playerIndex];
+
+     for (let i = 0; i < count; i++) {
+      if(this.deck.cards.length === 0){
+        console.log("Nie ma kart nie nie bidzie");
+        break;
+      }
+      const card = this.deck.draw();
+      penalizedPlayer.addCard(card);
+
+     }
+     this.pendingPenalty = 0;
+  }
+
 history : string[] = [];
 
   // Funkcja zagrywania karty
@@ -151,7 +167,9 @@ history : string[] = [];
 
       currentPlayer.removeCard(card);
       this.discardPile.push(card);
+
       this.history.push(`${currentPlayer.name} zagrał ${card.rank} ${card.suit}`);
+
       this.handleSpecialCard(card);
 
       if (this.checkGameEnd()){
@@ -159,6 +177,13 @@ history : string[] = [];
       } else {
         this.currentTurn = (this.currentTurn + 1) % this.players.length;
       }
+
+      if (this.pendingPenalty > 0) {
+        if(card.rank === "2"){
+          this.pendingPenalty += 2;
+        }
+      }
+
   }
 
   checkGameEnd(): boolean {
